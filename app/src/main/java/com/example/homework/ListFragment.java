@@ -20,20 +20,27 @@ public class ListFragment extends Fragment {
     private NumberAdapter numberAdapter = null;
     private ListFragmentListener listener = null;
 
+    private Bundle savedViewState = null;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            System.out.println("Restoring state in onCreateView!");
-        }
         return inflater.inflate(R.layout.list_fragment, container, false);
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
-        System.out.println("Saving state!");
         super.onSaveInstanceState(outState);
+        System.out.println("Saving state to brand new");
         outState.putInt(SAVED_NUMBERS, numberAdapter.getItemCount());
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        System.out.println("Saving state to saved bundle");
+        savedViewState = new Bundle();
+        savedViewState.putInt(SAVED_NUMBERS, numberAdapter.getItemCount());
     }
 
     @Override
@@ -41,8 +48,11 @@ public class ListFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         Integer numbers = null;
-        if (savedInstanceState != null) {
-            System.out.println("Restoring state in onViewCreated!");
+        if (savedViewState != null) {
+            System.out.println("Restoring state from saved bundle");
+            numbers = savedViewState.getInt(SAVED_NUMBERS);
+        } else if (savedInstanceState != null) {
+            System.out.println("Restoring state from brand new bundle");
             numbers = savedInstanceState.getInt(SAVED_NUMBERS);
         } else {
             numbers = 100;
