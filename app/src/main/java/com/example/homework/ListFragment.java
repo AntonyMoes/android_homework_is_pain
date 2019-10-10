@@ -1,6 +1,7 @@
 package com.example.homework;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,26 +20,31 @@ public class ListFragment extends Fragment {
 
     private NumberAdapter numberAdapter = null;
     private ListFragmentListener listener = null;
+    private Integer numbers = null;
 
     private Bundle savedViewState = null;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        System.out.println("LIST_FRAGMENT VIEW CREATE STARTED");
         return inflater.inflate(R.layout.list_fragment, container, false);
     }
 
+    // Saving in case of screen rotation
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        System.out.println("Saving state to brand new");
-        outState.putInt(SAVED_NUMBERS, numberAdapter.getItemCount());
+        if (numberAdapter != null) {
+            outState.putInt(SAVED_NUMBERS, numberAdapter.getItemCount());
+        }
     }
 
+    // Saving in case of fragment replacement
     @Override
     public void onDestroyView() {
+        System.out.println("LIST_FRAGMENT VIEW DESTROYED");
         super.onDestroyView();
-        System.out.println("Saving state to saved bundle");
         savedViewState = new Bundle();
         savedViewState.putInt(SAVED_NUMBERS, numberAdapter.getItemCount());
     }
@@ -46,22 +52,30 @@ public class ListFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        System.out.println("LIST_FRAGMENT VIEW CREATE ENDED");
 
-        Integer numbers = null;
+        int rows = 3;
+        int currentOrientation = getResources().getConfiguration().orientation;
+        if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+            rows = 4;
+        }
+
+
         if (savedViewState != null) {
-            System.out.println("Restoring state from saved bundle");
+            System.out.println("Getting numbers from saved state");
             numbers = savedViewState.getInt(SAVED_NUMBERS);
         } else if (savedInstanceState != null) {
-            System.out.println("Restoring state from brand new bundle");
+            System.out.println("Getting numbers from new state");
             numbers = savedInstanceState.getInt(SAVED_NUMBERS);
-        } else {
+        } else{
             numbers = 100;
         }
 
-        System.out.println("Numbers: " + numbers.toString());
+
+        System.out.println("Numbers: " + Integer.toString(numbers));
 
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), rows));
 
         numberAdapter = new NumberAdapter(numbers, listener);
         recyclerView.setAdapter(numberAdapter);
@@ -75,6 +89,7 @@ public class ListFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
+        System.out.println("LIST_FRAGMENT ATTACHED");
 
         if (context instanceof ListFragmentListener) {
             listener = (ListFragmentListener) context;
@@ -84,6 +99,7 @@ public class ListFragment extends Fragment {
     @Override
     public void onDetach() {
         listener = null;
+        System.out.println("LIST_FRAGMENT DEATTACHED");
         super.onDetach();
     }
 }

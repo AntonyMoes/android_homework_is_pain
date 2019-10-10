@@ -8,6 +8,7 @@ public class MainActivity extends AppCompatActivity implements ListFragmentListe
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        System.out.println("ACTIVITY CREATED");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements ListFragmentListe
 
     @Override
     public void onBackPressed() {
+        System.out.println("BACK PRESSED");
         int count = getSupportFragmentManager().getBackStackEntryCount();
 
         if (count <= 1) {
@@ -38,5 +40,11 @@ public class MainActivity extends AppCompatActivity implements ListFragmentListe
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        System.out.println("ACTIVITY DESTROYED");
     }
 }
