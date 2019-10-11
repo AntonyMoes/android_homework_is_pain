@@ -16,7 +16,6 @@ public class MainActivity extends AppCompatActivity implements ListFragmentListe
             getSupportFragmentManager()
                     .beginTransaction()
                     .add(R.id.fragment_container, new ListFragment())
-                    .addToBackStack(null)
                     .commit();
         }
     }
@@ -28,18 +27,6 @@ public class MainActivity extends AppCompatActivity implements ListFragmentListe
                 .replace(R.id.fragment_container, OneNumberFragment.newInstance(number, color))
                 .addToBackStack(null)
                 .commit();
-    }
-
-    @Override
-    public void onBackPressed() {
-        System.out.println("BACK PRESSED");
-        int count = getSupportFragmentManager().getBackStackEntryCount();
-
-        if (count <= 1) {
-            finish();
-        } else {
-            super.onBackPressed();
-        }
     }
 
     @Override
